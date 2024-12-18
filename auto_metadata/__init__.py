@@ -29,7 +29,7 @@ def collect_meta_data() ->  Dict[str, Any]:
         "executable": sys.executable,
         "argv": sys.argv,
         "modules": list(set(modules)),
-        "version_info": sys.version_info,
+        "version_info": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
     }
     ret["pkg_resources"] = pkg_resources
     return ret
