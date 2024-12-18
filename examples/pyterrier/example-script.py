@@ -18,6 +18,7 @@ def main(output_directory):
             {"qid": "q-1", "docno": "doc-03", "rank": 3, "score": 8},
         ]
     )
+    output_directory.mkdir(exist_ok=True, parents=True)
     pt.io.write_results(run, output_directory / "run.txt", format="trec")
     persist_ir_metadata(output_directory)
 
