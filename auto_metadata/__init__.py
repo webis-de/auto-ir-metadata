@@ -1,7 +1,7 @@
 import json
 import sys
 from pathlib import Path
-
+from typing import Dict, Any
 from pkg_resources import working_set
 
 FILE_NAME = ".ir-metadata"
@@ -18,11 +18,11 @@ def __ensure_output_directory_is_valid(output_directory: Path):
         raise ValueError("Foo")
 
     if not output_directory.is_dir():
-        output_directory.mkdirs(parents=True, exist_ok=True)
+        output_directory.mkdir(parents=True, exist_ok=True)
 
 
-def collect_meta_data() -> dict:
-    ret = {}
+def collect_meta_data() ->  Dict[str, Any]:
+    ret : Dict[str, Any] = {}
     modules = [i.split(".")[0] for i in sys.modules.keys() if i and not i.startswith("_")]
     pkg_resources = list(set([f"{i.project_name}=={i.version}" for i in working_set]))
     ret["sys"] = {
@@ -39,6 +39,6 @@ def persist_ir_metadata(output_directory: Path):
     __ensure_output_directory_is_valid(output_directory)
     output_file = output_directory / FILE_NAME
     collected_meta_data = collect_meta_data()
-    collected_meta_data = json.dumps(collected_meta_data)
+    serialized_meta_data = json.dumps(collected_meta_data)
     with open(output_file, "w") as f:
-        f.write(collected_meta_data)
+        f.write(serialized_meta_data)
