@@ -1,0 +1,15 @@
+{
+    "pkg_resources": [
+        "python-terrier==0.12.0"
+    ],
+    "sys": {
+        "argv": [
+            "pyterrier/example-script.py"
+        ],
+        "executable": "python3",
+        "modules": [
+            "pyterrier"
+        ],
+        "version_info": "3.XY.XY"
+    }
+}
