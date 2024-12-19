@@ -21,3 +21,7 @@
 ---
 
 `Stay tuned, more information will follow`
+
+Features:
+- Integration with git
+- In

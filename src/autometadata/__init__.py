@@ -1,10 +1,13 @@
 import json
+import subprocess
 import sys
 import traceback
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
+from cpuinfo import get_cpu_info
 from git import InvalidGitRepositoryError, Repo
+from nvsmi import get_gpus
 from pkg_resources import working_set
 
 FILE_NAME = ".ir-metadata"
@@ -72,11 +75,22 @@ def collect_meta_data() -> Dict[str, Any]:
     return ret
 
 
+def get_gpu_info() -> List[Dict[str, Any]]:
+    try:
+        return [json.loads(gpu.to_json()) for gpu in get_gpus()]
+    except FileNotFoundError:
+        return []
+
+
 def persist_ir_metadata(output_directory: Path):
     __ensure_output_directory_is_valid(output_directory)
     output_file = output_directory / FILE_NAME
     collected_meta_data = collect_meta_data()
     collected_meta_data["git"] = collect_git_repo_metadata()
+    collected_meta_data["cpuinfo"] = get_cpu_info()
+    collected_meta_data["gpus"] = get_gpu_info()
+
     serialized_meta_data = json.dumps(collected_meta_data)
+
     with open(output_file, "w") as f:
         f.write(serialized_meta_data)

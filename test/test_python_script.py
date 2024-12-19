@@ -31,6 +31,7 @@ def run_command_and_return_persisted_metadata(command):
         env["PYTHONPATH"] = ROOT_DIR / "src"
         subprocess.check_output(command(f), env=env, stderr=subprocess.STDOUT)
         actual = json.load(open(f"{f}/.ir-metadata", "r"))
+        actual["cpuinfo"] = {k:v for k,v in actual["cpuinfo"].items() if k == "arch"}
         actual["sys"]["executable"] = "python3" if "python3" in actual["sys"]["executable"] else "UNEXPECTED"
         actual["sys"]["version_info"] = "3.XY.XY" if actual["sys"]["version_info"].startswith("3.") else "UNEXPECTED"
         actual["sys"]["argv"] = [i.split("/")[-1] for i in actual["sys"]["argv"] if "example" in i]

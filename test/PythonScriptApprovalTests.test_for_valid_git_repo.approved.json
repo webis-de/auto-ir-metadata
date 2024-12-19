@@ -1,4 +1,7 @@
 {
+    "cpuinfo": {
+        "arch": "X86_64"
+    },
     "git": {
         "active_branch": "main",
         "commit": "a810f6948292c8c6ffef4fc0c8172887a8715c8d",
@@ -6,6 +9,7 @@
             "origin": "url-does-not-exist"
         }
     },
+    "gpus": [],
     "pkg_resources": [
         "python-terrier==0.12.0"
     ],
