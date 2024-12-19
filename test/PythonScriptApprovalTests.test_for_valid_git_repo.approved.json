@@ -2,6 +2,10 @@
     "cpuinfo": {
         "arch": "X86_64"
     },
+    "file": {
+        "content": "#!/usr/bin/env python3\nfrom pathlib import Path\n\nimport click\nimport pandas as pd\nimport pyterrier as pt\n\nfrom autometadata import persist_ir_metadata\n\n\n@click.command()\n@click.argument(\"output-directory\", type=Path)\ndef main(output_directory):\n    run = pd.DataFrame(\n        [\n            {\"qid\": \"q-1\", \"docno\": \"doc-01\", \"rank\": 1, \"score\": 10},\n            {\"qid\": \"q-1\", \"docno\": \"doc-02\", \"rank\": 2, \"score\": 9},\n            {\"qid\": \"q-1\", \"docno\": \"doc-03\", \"rank\": 3, \"score\": 8},\n        ]\n    )\n    output_directory.mkdir(exist_ok=True, parents=True)\n    pt.io.write_results(run, output_directory / \"run.txt\", format=\"trec\")\n    persist_ir_metadata(output_directory)\n\n\nif __name__ == \"__main__\":\n    main()\n",
+        "name": "example-script.py"
+    },
     "git": {
         "active_branch": "main",
         "commit": "a810f6948292c8c6ffef4fc0c8172887a8715c8d",

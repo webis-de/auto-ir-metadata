@@ -89,6 +89,8 @@ def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[Emi
     collected_meta_data["git"] = collect_git_repo_metadata()
     collected_meta_data["cpuinfo"] = get_cpu_info()
     collected_meta_data["gpus"] = get_gpu_info()
+    executed_file = _executed_file_from_stacktrace()
+    collected_meta_data["file"] = {"name": executed_file.name, "content": open(executed_file, 'r').read()}
     if codecarbon_tracker:
         collected_meta_data["codecarbon_emissions"] = json.loads(codecarbon_tracker.final_emissions_data.toJSON())
 
