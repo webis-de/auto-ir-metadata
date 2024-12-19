@@ -5,6 +5,7 @@ import subprocess
 import tempfile
 import unittest
 import zipfile
+from contextlib import contextmanager
 from pathlib import Path
 
 from approvaltests import verify_as_json
@@ -12,13 +13,14 @@ from approvaltests import verify_as_json
 TEST_RESOURCES = pathlib.Path(__file__).parent.parent.resolve() / "test" / "test-resources.zip"
 
 
+@contextmanager
 def resource(resource_name):
-    with tempfile.TemporaryDirectory(delete=False) as f:
+    with tempfile.TemporaryDirectory() as f:
         with zipfile.ZipFile(TEST_RESOURCES, "r") as zip_ref:
             zip_ref.extractall(f)
             ret = Path(f) / resource_name
             assert ret.is_dir(), ret
-            return ret
+            yield ret
 
 
 def run_command_and_return_persisted_metadata(command):
@@ -36,9 +38,8 @@ def run_command_and_return_persisted_metadata(command):
 
 class PythonScriptApprovalTests(unittest.TestCase):
     def test_for_valid_git_repo(self):
-        pyterrier_dir = resource("pyterrier")
-
-        actual = run_command_and_return_persisted_metadata(
-            lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
-        )
-        verify_as_json(actual)
+        with resource("pyterrier") as pyterrier_dir:
+            actual = run_command_and_return_persisted_metadata(
+                lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
+            )
+            verify_as_json(actual)
