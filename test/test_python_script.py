@@ -1,14 +1,14 @@
+import json
 import os
 import pathlib
 import subprocess
 import tempfile
 import unittest
 
-ROOT_DIR = pathlib.Path(__file__).parent.parent.resolve()
 from approvaltests import verify_as_json
 
+ROOT_DIR = pathlib.Path(__file__).parent.parent.resolve()
 EXAMPLE_DIR = ROOT_DIR / "examples"
-import json
 
 
 def run_command_and_return_persisted_metadata(command):
