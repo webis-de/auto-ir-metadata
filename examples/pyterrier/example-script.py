@@ -5,7 +5,7 @@ import click
 import pandas as pd
 import pyterrier as pt
 
-from auto_metadata import persist_ir_metadata
+from autometadata import persist_ir_metadata
 
 
 @click.command()

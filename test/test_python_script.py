@@ -14,7 +14,6 @@ import json
 def run_command_and_return_persisted_metadata(command):
     with tempfile.TemporaryDirectory() as f:
         env = os.environ.copy()
-        env["PYTHONPATH"] = ROOT_DIR
         subprocess.check_output(command(f), env=env)
         actual = json.load(open(f"{f}/.ir-metadata", "r"))
         actual["sys"]["executable"] = "python3" if "python3" in actual["sys"]["executable"] else "UNEXPECTED"
