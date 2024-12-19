@@ -11,7 +11,8 @@ from pathlib import Path
 
 from approvaltests import verify_as_json
 
-TEST_RESOURCES = pathlib.Path(__file__).parent.parent.resolve() / "test" / "test-resources.zip"
+ROOT_DIR = pathlib.Path(__file__).parent.parent.resolve()
+TEST_RESOURCES = ROOT_DIR / "test" / "test-resources.zip"
 
 
 @contextmanager
@@ -27,6 +28,7 @@ def resource(resource_name):
 def run_command_and_return_persisted_metadata(command):
     with tempfile.TemporaryDirectory() as f:
         env = os.environ.copy()
+        env["PYTHONPATH"] = ROOT_DIR / "src"
         subprocess.check_output(command(f), env=env, stderr=subprocess.STDOUT)
         actual = json.load(open(f"{f}/.ir-metadata", "r"))
         actual["sys"]["executable"] = "python3" if "python3" in actual["sys"]["executable"] else "UNEXPECTED"

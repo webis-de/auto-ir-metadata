@@ -4,7 +4,7 @@ import traceback
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from git import Repo
+from git import InvalidGitRepositoryError, Repo
 from pkg_resources import working_set
 
 FILE_NAME = ".ir-metadata"
@@ -24,11 +24,31 @@ def __ensure_output_directory_is_valid(output_directory: Path):
         output_directory.mkdir(parents=True, exist_ok=True)
 
 
+def _executed_file_from_stacktrace() -> Path:
+    return Path(traceback.extract_stack()[0].filename).resolve()
+
+
 def collect_git_repo_metadata(repo: Optional[Path] = None) -> Dict[str, Any]:
     if not repo:
-        return collect_git_repo_metadata(Path(traceback.extract_stack()[0].filename).parent.resolve())
+        return collect_git_repo_metadata(_executed_file_from_stacktrace().parent)
+    git_repo = None
+    try:
+        git_repo = Repo(repo)
+    except InvalidGitRepositoryError:
+        parent_repo = repo.parent
+        cnt = 0
 
-    git_repo = Repo(repo)
+        while cnt < 7 and parent_repo != Path("/"):
+            try:
+                cnt += 1
+                git_repo = Repo(parent_repo)
+                break
+            except InvalidGitRepositoryError:
+                parent_repo = parent_repo.parent
+
+        if not git_repo:
+            raise InvalidGitRepositoryError(f"I can not find a git repository in {repo}.")
+
     remotes = {r.name: r.url for r in git_repo.remotes}
 
     return {
