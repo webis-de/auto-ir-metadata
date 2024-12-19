@@ -39,7 +39,7 @@ def collect_git_repo_metadata(repo: Optional[Path] = None) -> Dict[str, Any]:
 
 
 def collect_meta_data() -> Dict[str, Any]:
-    ret : Dict[str, Any] = {}
+    ret: Dict[str, Any] = {}
     modules = [i.split(".")[0] for i in sys.modules.keys() if i and not i.startswith("_")]
     pkg_resources = list(set([f"{i.project_name}=={i.version}" for i in working_set]))
     ret["sys"] = {
