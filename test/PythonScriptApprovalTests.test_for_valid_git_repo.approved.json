@@ -11,7 +11,7 @@
     ],
     "sys": {
         "argv": [
-            "pyterrier/example-script.py"
+            "example-script.py"
         ],
         "executable": "python3",
         "modules": [
