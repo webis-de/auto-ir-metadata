@@ -1,6 +1,7 @@
 import json
 import os
 import pathlib
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -26,7 +27,7 @@ def resource(resource_name):
 def run_command_and_return_persisted_metadata(command):
     with tempfile.TemporaryDirectory() as f:
         env = os.environ.copy()
-        subprocess.check_output(command(f), env=env)
+        subprocess.check_output(command(f), env=env, stderr=subprocess.STDOUT)
         actual = json.load(open(f"{f}/.ir-metadata", "r"))
         actual["sys"]["executable"] = "python3" if "python3" in actual["sys"]["executable"] else "UNEXPECTED"
         actual["sys"]["version_info"] = "3.XY.XY" if actual["sys"]["version_info"].startswith("3.") else "UNEXPECTED"
@@ -43,3 +44,17 @@ class PythonScriptApprovalTests(unittest.TestCase):
                 lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
             )
             verify_as_json(actual)
+
+    def test_for_pyterrier_fails_if_not_in_git(self):
+        with resource("pyterrier") as pyterrier_dir:
+            shutil.rmtree(pyterrier_dir / ".git")
+
+            with self.assertRaises(subprocess.CalledProcessError) as context:
+                run_command_and_return_persisted_metadata(
+                    lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
+                )
+
+            self.assertTrue(
+                "InvalidGitRepositoryError" in repr(context.exception.stdout),
+                f"InvalidGitRepositoryError must be in the message: {repr(context.exception.stdout)}.",
+            )
