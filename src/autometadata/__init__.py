@@ -4,6 +4,7 @@ import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+from codecarbon import EmissionsTracker
 from cpuinfo import get_cpu_info
 from git import InvalidGitRepositoryError, Repo
 from nvsmi import get_gpus
@@ -81,13 +82,15 @@ def get_gpu_info() -> List[Dict[str, Any]]:
         return []
 
 
-def persist_ir_metadata(output_directory: Path):
+def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[EmissionsTracker] = None):
     __ensure_output_directory_is_valid(output_directory)
     output_file = output_directory / FILE_NAME
     collected_meta_data = collect_meta_data()
     collected_meta_data["git"] = collect_git_repo_metadata()
     collected_meta_data["cpuinfo"] = get_cpu_info()
     collected_meta_data["gpus"] = get_gpu_info()
+    if codecarbon_tracker:
+        collected_meta_data["codecarbon_emissions"] = json.loads(codecarbon_tracker.final_emissions_data.toJSON())
 
     serialized_meta_data = json.dumps(collected_meta_data)
 
