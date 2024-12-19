@@ -19,6 +19,7 @@ class TestUtilityFunctions(unittest.TestCase):
     def test_tmp_is_no_git_repo(self):
         with self.assertRaises(InvalidGitRepositoryError) as context:
             collect_git_repo_metadata(Path("/tmp"))
+
         self.assertTrue("InvalidGitRepositoryError" not in repr(context))
 
     def test_with_current_git_repo_root_level(self):

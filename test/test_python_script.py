@@ -45,6 +45,7 @@ class PythonScriptApprovalTests(unittest.TestCase):
             actual = run_command_and_return_persisted_metadata(
                 lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
             )
+
             verify_as_json(actual)
 
     def test_for_pyterrier_fails_if_not_in_git(self):
