@@ -17,6 +17,13 @@
     "pkg_resources": [
         "python-terrier==0.12.0"
     ],
+    "platform": {
+        "architecture": "OMITTED",
+        "machine": "OMITTED",
+        "processor": "OMITTED",
+        "system": "OMITTED",
+        "version": "OMITTED"
+    },
     "sys": {
         "argv": [
             "example-script.py"

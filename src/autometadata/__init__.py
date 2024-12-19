@@ -1,4 +1,5 @@
 import json
+import platform
 import sys
 import traceback
 from pathlib import Path
@@ -82,6 +83,16 @@ def get_gpu_info() -> List[Dict[str, Any]]:
         return []
 
 
+def get_platform_info() -> Dict[str, Any]:
+    return {
+        "system": platform.system(),
+        "machine": platform.machine(),
+        "version": platform.version(),
+        "architecture": platform.architecture(),
+        "processor": platform.processor(),
+    }
+
+
 def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[EmissionsTracker] = None):
     __ensure_output_directory_is_valid(output_directory)
     output_file = output_directory / FILE_NAME
@@ -89,6 +100,7 @@ def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[Emi
     collected_meta_data["git"] = collect_git_repo_metadata()
     collected_meta_data["cpuinfo"] = get_cpu_info()
     collected_meta_data["gpus"] = get_gpu_info()
+    collected_meta_data["platform"] = get_platform_info()
     executed_file = _executed_file_from_stacktrace()
     collected_meta_data["file"] = {"name": executed_file.name, "content": open(executed_file, "r").read()}
     if codecarbon_tracker:

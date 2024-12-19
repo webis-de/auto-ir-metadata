@@ -35,6 +35,7 @@ def run_command_and_return_persisted_metadata(command):
         actual["sys"]["executable"] = "python3" if "python3" in actual["sys"]["executable"] else "UNEXPECTED"
         actual["sys"]["version_info"] = "3.XY.XY" if actual["sys"]["version_info"].startswith("3.") else "UNEXPECTED"
         actual["sys"]["argv"] = [i.split("/")[-1] for i in actual["sys"]["argv"] if "example" in i]
+        actual["platform"] = {k: "OMITTED" for k in actual["platform"].keys()}
         actual["sys"]["modules"] = [i for i in actual["sys"]["modules"] if "terrier" in i]
         actual["pkg_resources"] = [i for i in actual["pkg_resources"] if "python-terrier" in i]
         return actual
