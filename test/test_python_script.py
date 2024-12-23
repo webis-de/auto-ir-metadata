@@ -1,4 +1,3 @@
-import importlib
 import json
 import os
 import shutil
@@ -12,8 +11,8 @@ from typing import Generator
 
 from approvaltests import verify_as_json
 
-ROOT_DIR = importlib.resources.files()
-TEST_RESOURCES = ROOT_DIR / "test-resources.zip"
+ROOT_DIR = Path(__file__).parent.parent.resolve()
+TEST_RESOURCES = ROOT_DIR / "test" / "test-resources.zip"
 
 
 @contextmanager
