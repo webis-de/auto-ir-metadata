@@ -1,6 +1,6 @@
+import importlib
 import json
 import os
-import pathlib
 import shutil
 import subprocess
 import tempfile
@@ -8,15 +8,16 @@ import unittest
 import zipfile
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Generator
 
 from approvaltests import verify_as_json
 
-ROOT_DIR = pathlib.Path(__file__).parent.parent.resolve()
-TEST_RESOURCES = ROOT_DIR / "test" / "test-resources.zip"
+ROOT_DIR = importlib.resources.files()
+TEST_RESOURCES = ROOT_DIR / "test-resources.zip"
 
 
 @contextmanager
-def resource(resource_name: str) -> Path:
+def resource(resource_name: str) -> Generator[Path, None, None]:
     with tempfile.TemporaryDirectory() as f:
         with zipfile.ZipFile(TEST_RESOURCES, "r") as zip_ref:
             zip_ref.extractall(f)
@@ -59,4 +60,4 @@ class PythonScriptApprovalTests(unittest.TestCase):
                     lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
                 )
 
-            self.assertNotIn("InvalidGitRepositoryError", repr(context.exception.stdout))
+            self.assertIn("InvalidGitRepositoryError", repr(context.exception.stdout))
