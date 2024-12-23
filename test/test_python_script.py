@@ -19,7 +19,7 @@ TEST_RESOURCES = ROOT_DIR / "test-resources.zip"
 @contextmanager
 def resource(resource_name: str) -> Generator[Path, None, None]:
     with tempfile.TemporaryDirectory() as f:
-        with zipfile.ZipFile(TEST_RESOURCES, "r") as zip_ref:
+        with zipfile.ZipFile(str(TEST_RESOURCES), "r") as zip_ref:
             zip_ref.extractall(f)
             ret = Path(f) / resource_name
             assert ret.is_dir(), ret

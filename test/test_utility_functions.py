@@ -1,5 +1,4 @@
 import importlib
-import pathlib
 import unittest
 from pathlib import Path
 
@@ -7,7 +6,7 @@ from git import InvalidGitRepositoryError
 
 from autometadata import _executed_file_from_stacktrace, collect_git_repo_metadata, get_gpu_info
 
-ROOT_DIR = importlib.resources.files() / '..'
+ROOT_DIR = importlib.resources.files() / ".."
 
 
 class TestUtilityFunctions(unittest.TestCase):
