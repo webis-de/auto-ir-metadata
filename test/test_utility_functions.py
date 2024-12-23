@@ -13,13 +13,13 @@ class TestUtilityFunctions(unittest.TestCase):
     def test_file_is_extracted(self):
         expected = set(["pytest", "run_pytest_script"])
         actual = _executed_file_from_stacktrace().stem
-        self.assertTrue(actual in expected, f"{actual} must be in {expected}")
+        self.assertIn(actual, expected)
 
     def test_tmp_is_no_git_repo(self):
         with self.assertRaises(InvalidGitRepositoryError) as context:
             collect_git_repo_metadata(Path("/tmp"))
 
-        self.assertTrue("InvalidGitRepositoryError" not in repr(context))
+        self.assertNotIn("InvalidGitRepositoryError", repr(context))
 
     def test_with_current_git_repo_root_level(self):
         self.assertIsNotNone(collect_git_repo_metadata(ROOT_DIR))

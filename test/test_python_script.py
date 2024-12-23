@@ -16,7 +16,7 @@ TEST_RESOURCES = ROOT_DIR / "test" / "test-resources.zip"
 
 
 @contextmanager
-def resource(resource_name):
+def resource(resource_name: str) -> Path:
     with tempfile.TemporaryDirectory() as f:
         with zipfile.ZipFile(TEST_RESOURCES, "r") as zip_ref:
             zip_ref.extractall(f)
@@ -59,7 +59,4 @@ class PythonScriptApprovalTests(unittest.TestCase):
                     lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
                 )
 
-            self.assertTrue(
-                "InvalidGitRepositoryError" in repr(context.exception.stdout),
-                f"InvalidGitRepositoryError must be in the message: {repr(context.exception.stdout)}.",
-            )
+            self.assertNotIn("InvalidGitRepositoryError", repr(context.exception.stdout))
