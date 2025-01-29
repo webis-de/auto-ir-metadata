@@ -3,6 +3,7 @@ import platform
 import sys
 import tempfile
 import traceback
+from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -52,9 +53,9 @@ def _notebook_contents() -> tuple[Path, Path]:
     with tempfile.TemporaryDirectory(delete=False) as f:
         python_file = Path(f) / "script.py"
         notebook_file = Path(f) / "notebook.ipynb"
-
-        ipython.magic(f"save -f {python_file} 1-9999")
-        ipython.magic(f"notebook {notebook_file}")
+        with redirect_stdout(None):
+            ipython.magic(f"save -f {python_file} 1-9999")
+            ipython.magic(f"notebook {notebook_file}")
 
         return python_file, notebook_file
 
