@@ -4,7 +4,6 @@ from pathlib import Path
 import click
 import pandas as pd
 import pyterrier as pt
-from codecarbon import OfflineEmissionsTracker
 
 from auto_ir_metadata import persist_ir_metadata
 
