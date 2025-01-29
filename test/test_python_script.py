@@ -38,6 +38,9 @@ def run_command_and_return_persisted_metadata(command):
         actual["platform"] = {k: "OMITTED" for k in actual["platform"].keys()}
         actual["sys"]["modules"] = [i for i in actual["sys"]["modules"] if "terrier" in i]
         actual["pkg_resources"] = [i for i in actual["pkg_resources"] if "python-terrier" in i]
+        if 'codecarbon_emissions' in actual:
+            actual['codecarbon_emissions'] = 'OMMITTED.'
+
         return actual
 
 
@@ -46,6 +49,14 @@ class PythonScriptApprovalTests(unittest.TestCase):
         with resource("pyterrier") as pyterrier_dir:
             actual = run_command_and_return_persisted_metadata(
                 lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
+            )
+
+            verify_as_json(actual)
+
+    def test_for_valid_git_repo_without_emissions(self):
+        with resource("pyterrier") as pyterrier_dir:
+            actual = run_command_and_return_persisted_metadata(
+                lambda i: ["python3", f"{pyterrier_dir}/example-script-without-emissions.py", i]
             )
 
             verify_as_json(actual)
