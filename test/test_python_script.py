@@ -40,6 +40,8 @@ def run_command_and_return_persisted_metadata(command):
         actual["pkg_resources"] = [i for i in actual["pkg_resources"] if "python-terrier" in i]
         if 'codecarbon_emissions' in actual:
             actual['codecarbon_emissions'] = 'OMMITTED.'
+        if 'notebook' in actual:
+            actual['notebook'] = 'OMMITTED.'
 
         return actual
 
@@ -49,6 +51,14 @@ class PythonScriptApprovalTests(unittest.TestCase):
         with resource("pyterrier") as pyterrier_dir:
             actual = run_command_and_return_persisted_metadata(
                 lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
+            )
+
+            verify_as_json(actual)
+
+    def test_for_jupyter_notebook_in_valid_git_repo(self):
+        with resource("pyterrier") as pyterrier_dir:
+            actual = run_command_and_return_persisted_metadata(
+                lambda i: ["bash", "-c", f"cd {pyterrier_dir} && runnb --allow-not-trusted example-notebook.ipynb && cp .ir-metadata {i}/.ir-metadata"]
             )
 
             verify_as_json(actual)

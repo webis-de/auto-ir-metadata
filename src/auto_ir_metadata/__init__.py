@@ -1,6 +1,7 @@
 import json
 import platform
 import sys
+import tempfile
 import traceback
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -18,6 +19,9 @@ def __ensure_output_directory_is_valid(outdir: Path):
     if not outdir:
         raise ValueError("Foo")
 
+    if isinstance(outdir, str):
+        outdir = Path(outdir)
+
     if outdir.exists() and not outdir.is_dir():
         raise ValueError("Foo")
 
@@ -26,6 +30,31 @@ def __ensure_output_directory_is_valid(outdir: Path):
 
     if not outdir.is_dir():
         outdir.mkdir(parents=True, exist_ok=True)
+
+
+def _get_ipython_or_none() -> any:
+    try:
+        from IPython import get_ipython
+        return get_ipython()
+    except:
+        return None
+
+
+def _is_notebook() -> bool:
+    return _get_ipython_or_none() is not None
+
+
+def _notebook_contents() -> tuple[Path, Path]:
+    ipython = _get_ipython_or_none()
+
+    with tempfile.TemporaryDirectory(delete=False) as f:
+        python_file = Path(f) / 'script.py'
+        notebook_file = Path(f) / 'notebook.ipynb'
+
+        ipython.magic(f"save -f {python_file} 1-9999")
+        ipython.magic(f"notebook {notebook_file}")
+
+        return python_file, notebook_file
 
 
 def _executed_file_from_stacktrace() -> Path:
@@ -94,6 +123,9 @@ def get_platform_info() -> Dict[str, Any]:
 
 
 def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[EmissionsTracker] = None):
+    if output_directory and isinstance(output_directory, str):
+        output_directory = Path(output_directory)
+
     __ensure_output_directory_is_valid(output_directory)
     output_file = output_directory / FILE_NAME
     collected_meta_data = get_python_info()
@@ -101,8 +133,15 @@ def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[Emi
     collected_meta_data["cpuinfo"] = get_cpu_info()
     collected_meta_data["gpus"] = get_gpu_info()
     collected_meta_data["platform"] = get_platform_info()
-    executed_file = _executed_file_from_stacktrace()
-    collected_meta_data["file"] = {"name": executed_file.name, "content": open(executed_file, "r").read()}
+
+    if _is_notebook():
+        script, notebook = _notebook_contents()
+        collected_meta_data["file"] = {"name": script.name, "content": open(script, "r").read()}
+        collected_meta_data["notebook"] = {"name": notebook.name, "content": open(notebook, "r").read()}
+    else:
+        executed_file = _executed_file_from_stacktrace()
+        collected_meta_data["file"] = {"name": executed_file.name, "content": open(executed_file, "r").read()}
+
     if codecarbon_tracker:
         collected_meta_data["codecarbon_emissions"] = json.loads(codecarbon_tracker.final_emissions_data.toJSON())
 
