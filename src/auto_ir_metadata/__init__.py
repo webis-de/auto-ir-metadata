@@ -32,24 +32,26 @@ def __ensure_output_directory_is_valid(outdir: Path):
         outdir.mkdir(parents=True, exist_ok=True)
 
 
-def _get_ipython_or_none() -> any:
+def _is_notebook() -> bool:
     try:
         from IPython import get_ipython
-        return get_ipython()
-    except:
-        return None
 
-
-def _is_notebook() -> bool:
-    return _get_ipython_or_none() is not None
+        return get_ipython() is not None  # type: ignore
+    except ImportError:
+        return False
 
 
 def _notebook_contents() -> tuple[Path, Path]:
-    ipython = _get_ipython_or_none()
+    if not _is_notebook():
+        raise ValueError("foo")
+
+    from IPython import get_ipython
+
+    ipython = get_ipython()  # type: ignore
 
     with tempfile.TemporaryDirectory(delete=False) as f:
-        python_file = Path(f) / 'script.py'
-        notebook_file = Path(f) / 'notebook.ipynb'
+        python_file = Path(f) / "script.py"
+        notebook_file = Path(f) / "notebook.ipynb"
 
         ipython.magic(f"save -f {python_file} 1-9999")
         ipython.magic(f"notebook {notebook_file}")
