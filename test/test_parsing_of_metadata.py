@@ -1,22 +1,40 @@
 import unittest
+from pathlib import Path
 
-from auto_ir_metadata import load_ir_metadata
+from approvaltests import verify_as_json
 
-from .test_python_script import resource, run_command_and_return_persisted_metadata
+from auto_ir_metadata import load_ir_metadata as load_ir_metadata_to_test
+
+ROOT_DIR = Path(__file__).parent.parent.resolve()
+TEST_RESOURCES = ROOT_DIR / "test" / "resources"
+FIELDS_TO_OMIT = [
+    'sys', 'pkg_resources', 'platform', 'cpuinfo', 'file', 'notebook', 'gpus',
+    'notebook_html'
+]
+
+
+def load_ir_metadata(subdirectory):
+    ret = load_ir_metadata_to_test(TEST_RESOURCES / subdirectory)
+
+    for field_to_omit in FIELDS_TO_OMIT:
+        if field_to_omit in ret:
+            ret[field_to_omit] = 'OMITTED'
+
+    return ret
 
 
 class TestParsingOfMetadata(unittest.TestCase):
-    def test_for_jupyter_notebook_in_valid_git_repo(self):
-        with resource("pyterrier") as pyterrier_dir:
-            cmd = "runnb --allow-not-trusted example-notebook.ipynb"
-            metadata_path = run_command_and_return_persisted_metadata(
-                lambda i: [
-                    "bash",
-                    "-c",
-                    f"cd {pyterrier_dir} && {cmd} && cp .ir-metadata {i}/.ir-metadata",
-                ],
-                include_path=True
-            )['path']
-            actual = load_ir_metadata(metadata_path)
+    def test_loading_of_metadata_from_notebook_directory(self):
+        actual = load_ir_metadata("example-ir-metadata")
 
-            verify_as_json(actual)
+        verify_as_json(actual)
+
+    def test_loading_of_metadata_from_file_in_notebook_directory(self):
+        actual = load_ir_metadata("example-ir-metadata/.ir-metadata")
+
+        verify_as_json(actual)
+
+    def test_loading_of_metadata_from_file_with_invalid_notebook(self):
+        actual = load_ir_metadata("example-ir-metadata/ir-metadata-invalid-notebook")
+
+        verify_as_json(actual)

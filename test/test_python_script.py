@@ -25,8 +25,8 @@ def resource(resource_name: str) -> Generator[Path, None, None]:
             yield ret
 
 
-def run_command_and_return_persisted_metadata(command):
-    with tempfile.TemporaryDirectory() as f:
+def run_command_and_return_persisted_metadata(command, include_path=False):
+    with tempfile.TemporaryDirectory(delete=False) as f:
         env = os.environ.copy()
         env["PYTHONPATH"] = ROOT_DIR / "src"
         subprocess.check_output(command(f), env=env, stderr=subprocess.STDOUT)
@@ -42,6 +42,9 @@ def run_command_and_return_persisted_metadata(command):
             actual["codecarbon_emissions"] = "OMMITTED."
         if "notebook" in actual:
             actual["notebook"] = "OMMITTED."
+
+        if include_path:
+            actual['path'] = Path(f)
 
         return actual
 

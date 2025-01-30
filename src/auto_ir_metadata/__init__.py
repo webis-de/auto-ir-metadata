@@ -7,9 +7,11 @@ from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import nbformat
 from codecarbon import EmissionsTracker
 from cpuinfo import get_cpu_info
 from git import InvalidGitRepositoryError, Repo
+from nbconvert import HTMLExporter
 from nvsmi import get_gpus
 from pkg_resources import working_set
 
@@ -163,3 +165,23 @@ def persist_ir_metadata(
 
     with open(output_file, "w") as f:
         f.write(serialized_meta_data)
+
+
+def load_ir_metadata(directory: Path):
+    if directory.is_dir() and (directory / '.ir-metadata').is_file():
+        return load_ir_metadata(directory / '.ir-metadata')
+
+    ret = json.load(open(directory))
+
+    if 'notebook' in ret and 'content' in ret['notebook']:
+        try:
+            notebook_content = json.dumps(json.loads(ret['notebook']['content']))
+
+            notebook = nbformat.reads(notebook_content, as_version=4)
+            html_exporter = HTMLExporter(template_name="classic")
+            (body, _) = html_exporter.from_notebook_node(notebook)
+            ret['notebook_html'] = body
+        except:
+            pass
+
+    return ret

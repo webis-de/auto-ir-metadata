@@ -1,0 +1,19 @@
+{
+    "cpuinfo": "OMITTED",
+    "file": "OMITTED",
+    "git": {
+        "active_branch": "main",
+        "commit": "04be3314276bfb219004518b3581ec0bb5e396d3",
+        "remotes": {
+            "origin": "url-does-not-exist"
+        }
+    },
+    "gpus": "OMITTED",
+    "notebook": "OMITTED",
+    "notebook_html": "OMITTED",
+    "pkg_resources": "OMITTED",
+    "platform": "OMITTED",
+    "sys": "OMITTED",
+    "system_description": "my-description",
+    "system_name": "my-system"
+}
