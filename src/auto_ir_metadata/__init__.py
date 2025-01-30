@@ -9,12 +9,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import nbformat
-from codecarbon import EmissionsTracker
-from cpuinfo import get_cpu_info
-from git import InvalidGitRepositoryError, Repo
 from nbconvert import HTMLExporter
-from nvsmi import get_gpus
 from pkg_resources import working_set
+
+from .util import *
 
 FILE_NAME = ".ir-metadata"
 
@@ -67,36 +65,6 @@ def _executed_file_from_stacktrace() -> Path:
     return Path(traceback.extract_stack()[0].filename).resolve()
 
 
-def collect_git_repo_metadata(repo: Optional[Path] = None) -> Dict[str, Any]:
-    if not repo:
-        return collect_git_repo_metadata(_executed_file_from_stacktrace().parent)
-    git_repo = None
-    try:
-        git_repo = Repo(repo)
-    except InvalidGitRepositoryError:
-        parent_repo = repo.parent
-        cnt = 0
-
-        while cnt < 7 and parent_repo != Path("/"):
-            try:
-                cnt += 1
-                git_repo = Repo(parent_repo)
-                break
-            except InvalidGitRepositoryError:
-                parent_repo = parent_repo.parent
-
-        if not git_repo:
-            raise InvalidGitRepositoryError(f"I can not find a git repository in {repo}.")
-
-    remotes = {r.name: r.url for r in git_repo.remotes}
-
-    return {
-        "commit": git_repo.head.commit.hexsha,
-        "active_branch": git_repo.active_branch.name,
-        "remotes": remotes,
-    }
-
-
 def get_python_info() -> Dict[str, Any]:
     ret: Dict[str, Any] = {}
     modules = [i.split(".")[0] for i in sys.modules.keys() if i and not i.startswith("_")]
@@ -130,7 +98,6 @@ def get_platform_info() -> Dict[str, Any]:
 
 def persist_ir_metadata(
         output_directory: Path,
-        codecarbon_tracker: Optional[EmissionsTracker] = None,
         system_name: Optional[str] = None,
         system_description: Optional[str] = None
         ):
@@ -140,8 +107,8 @@ def persist_ir_metadata(
     __ensure_output_directory_is_valid(output_directory)
     output_file = output_directory / FILE_NAME
     collected_meta_data = get_python_info()
-    collected_meta_data["git"] = collect_git_repo_metadata()
-    collected_meta_data["cpuinfo"] = get_cpu_info()
+    #collected_meta_data["git"] = collect_git_repo_metadata()
+    #collected_meta_data["cpuinfo"] = get_cpu_info()
     collected_meta_data["gpus"] = get_gpu_info()
     collected_meta_data["platform"] = get_platform_info()
 
@@ -158,9 +125,6 @@ def persist_ir_metadata(
     else:
         executed_file = _executed_file_from_stacktrace()
         collected_meta_data["file"] = {"name": executed_file.name, "content": open(executed_file, "r").read()}
-
-    if codecarbon_tracker:
-        collected_meta_data["codecarbon_emissions"] = json.loads(codecarbon_tracker.final_emissions_data.toJSON())
 
     serialized_meta_data = json.dumps(collected_meta_data)
 
