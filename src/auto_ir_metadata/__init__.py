@@ -125,7 +125,7 @@ def get_platform_info() -> Dict[str, Any]:
     }
 
 
-def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[EmissionsTracker] = None):
+def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[EmissionsTracker] = None, system_name: str = None, system_description: str = None):
     if output_directory and isinstance(output_directory, str):
         output_directory = Path(output_directory)
 
@@ -136,6 +136,12 @@ def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[Emi
     collected_meta_data["cpuinfo"] = get_cpu_info()
     collected_meta_data["gpus"] = get_gpu_info()
     collected_meta_data["platform"] = get_platform_info()
+
+    if system_name:
+        collected_meta_data['system_name'] = system_name
+
+    if system_description:
+        collected_meta_data['system_description'] = system_description
 
     if _is_notebook():
         script, notebook = _notebook_contents()
