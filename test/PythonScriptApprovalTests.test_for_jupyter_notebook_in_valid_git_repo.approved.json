@@ -3,12 +3,12 @@
         "arch": "X86_64"
     },
     "file": {
-        "content": "# coding: utf-8\nimport sys, os\nsys.path.append('/home/vscode/.local/lib/python3.12/site-packages/runnb')\nimport tee\nsys.stdin = tee.Tee(sys.__stdin__, sys.stdin)\nsys.stdout = tee.Tee(sys.__stdout__, sys.stdout)\nsys.stderr = tee.Tee(sys.__stderr__, sys.stderr)\ndel sys.modules['tee']\ndel tee\nimport click\nimport pandas as pd\nimport pyterrier as pt\nfrom auto_ir_metadata import persist_ir_metadata\nrun = pd.DataFrame([\n    {\"qid\": \"q-1\", \"docno\": \"doc-01\", \"rank\": 1, \"score\": 10},\n    {\"qid\": \"q-1\", \"docno\": \"doc-02\", \"rank\": 2, \"score\": 9},\n    {\"qid\": \"q-1\", \"docno\": \"doc-03\", \"rank\": 3, \"score\": 8},\n])\n\noutput_directory = \".\"\n\npt.io.write_results(run, f\"{output_directory}/run.txt\", format=\"trec\")\npersist_ir_metadata(output_directory)\n",
+        "content": "# coding: utf-8\nimport sys, os\nsys.path.append('/home/vscode/.local/lib/python3.12/site-packages/runnb')\nimport tee\nsys.stdin = tee.Tee(sys.__stdin__, sys.stdin)\nsys.stdout = tee.Tee(sys.__stdout__, sys.stdout)\nsys.stderr = tee.Tee(sys.__stderr__, sys.stderr)\ndel sys.modules['tee']\ndel tee\nimport click\nimport pandas as pd\nimport pyterrier as pt\nfrom auto_ir_metadata import persist_ir_metadata\nrun = pd.DataFrame([\n    {\"qid\": \"q-1\", \"docno\": \"doc-01\", \"rank\": 1, \"score\": 10},\n    {\"qid\": \"q-1\", \"docno\": \"doc-02\", \"rank\": 2, \"score\": 9},\n    {\"qid\": \"q-1\", \"docno\": \"doc-03\", \"rank\": 3, \"score\": 8},\n])\n\noutput_directory = \".\"\n\npt.io.write_results(run, f\"{output_directory}/run.txt\", format=\"trec\")\npersist_ir_metadata(output_directory, system_name='my-system', system_description='my-description')\n",
         "name": "script.py"
     },
     "git": {
         "active_branch": "main",
-        "commit": "a810f6948292c8c6ffef4fc0c8172887a8715c8d",
+        "commit": "04be3314276bfb219004518b3581ec0bb5e396d3",
         "remotes": {
             "origin": "url-does-not-exist"
         }
@@ -32,5 +32,7 @@
             "pyterrier"
         ],
         "version_info": "3.XY.XY"
-    }
+    },
+    "system_description": "my-description",
+    "system_name": "my-system"
 }
