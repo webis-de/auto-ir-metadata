@@ -168,6 +168,19 @@ def persist_ir_metadata(
         f.write(serialized_meta_data)
 
 
+def get_url_of_git_repo(metadata):
+    try:
+        url = [i for i in metadata['git']['remotes'].values()][0]
+        url = url.replace('.git', '')
+        commit = metadata['git']['commit']
+
+        if url.startswith('git@'):
+            url = url.replace(':', '/')
+            url = url.replace('git@', 'https://')
+        return f'{url}/tree/{commit}'
+    except:
+        return None
+
 def load_ir_metadata(directory: Path, decompress: bool = False):
     if directory.is_dir() and (directory / '.ir-metadata').is_file():
         return load_ir_metadata(directory / '.ir-metadata')
@@ -193,5 +206,8 @@ def load_ir_metadata(directory: Path, decompress: bool = False):
             ret['notebook_html'] = body
         except:
             pass
+    
+    if 'git' in ret and get_url_of_git_repo(ret):
+        ret['git_url'] = get_url_of_git_repo(ret)
 
     return ret

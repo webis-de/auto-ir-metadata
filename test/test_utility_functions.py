@@ -3,7 +3,12 @@ from pathlib import Path
 
 from git import InvalidGitRepositoryError
 
-from auto_ir_metadata import _executed_file_from_stacktrace, collect_git_repo_metadata, get_gpu_info
+from auto_ir_metadata import (
+    _executed_file_from_stacktrace,
+    collect_git_repo_metadata,
+    get_gpu_info,
+    get_url_of_git_repo,
+)
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 
@@ -28,3 +33,37 @@ class TestUtilityFunctions(unittest.TestCase):
 
     def test_get_gpus(self):
         self.assertIsNotNone(get_gpu_info())
+
+    def test_git_link_is_failsave(self):
+        expected = None
+        metadata = {}
+
+        actual = get_url_of_git_repo(metadata)
+
+        self.assertEqual(expected, actual)
+
+    def test_git_link_for_ssh(self):
+        expected = 'https://github.com/OpenWebSearch/wows-code/tree/3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f'
+        metadata = {"git": {
+            "commit": "3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f",
+            "active_branch": "main",
+            "remotes": {"origin": "git@github.com:OpenWebSearch/wows-code.git"}
+            }
+        }
+
+        actual = get_url_of_git_repo(metadata)
+
+        self.assertEqual(expected, actual)
+
+    def test_git_link_for_http(self):
+        expected = 'https://github.com/OpenWebSearch/wows-code/tree/3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f'
+        metadata = {"git": {
+            "commit": "3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f",
+            "active_branch": "main",
+            "remotes": {"origin": "https://github.com/OpenWebSearch/wows-code.git"}
+            }
+        }
+
+        actual = get_url_of_git_repo(metadata)
+
+        self.assertEqual(expected, actual)

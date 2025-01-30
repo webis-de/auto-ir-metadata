@@ -8,6 +8,7 @@
             "origin": "url-does-not-exist"
         }
     },
+    "git_url": "url-does-not-exist/tree/04be3314276bfb219004518b3581ec0bb5e396d3",
     "gpus": "OMITTED",
     "notebook": "OMITTED",
     "pkg_resources": "OMITTED",
