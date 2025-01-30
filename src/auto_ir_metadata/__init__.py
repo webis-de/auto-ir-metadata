@@ -125,7 +125,12 @@ def get_platform_info() -> Dict[str, Any]:
     }
 
 
-def persist_ir_metadata(output_directory: Path, codecarbon_tracker: Optional[EmissionsTracker] = None, system_name: str = None, system_description: str = None):
+def persist_ir_metadata(
+        output_directory: Path,
+        codecarbon_tracker: Optional[EmissionsTracker] = None,
+        system_name: Optional[str] = None,
+        system_description: Optional[str] = None
+        ):
     if output_directory and isinstance(output_directory, str):
         output_directory = Path(output_directory)
 
