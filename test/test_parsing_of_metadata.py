@@ -13,8 +13,8 @@ FIELDS_TO_OMIT = [
 ]
 
 
-def load_ir_metadata(subdirectory):
-    ret = load_ir_metadata_to_test(TEST_RESOURCES / subdirectory)
+def load_ir_metadata(subdirectory, decompress=False):
+    ret = load_ir_metadata_to_test(TEST_RESOURCES / subdirectory, decompress)
 
     for field_to_omit in FIELDS_TO_OMIT:
         if field_to_omit in ret:
@@ -31,6 +31,11 @@ class TestParsingOfMetadata(unittest.TestCase):
 
     def test_loading_of_metadata_from_file_in_notebook_directory(self):
         actual = load_ir_metadata("example-ir-metadata/.ir-metadata")
+
+        verify_as_json(actual)
+
+    def test_loading_of_metadata_from_zip(self):
+        actual = load_ir_metadata("example-ir-metadata.zip", decompress=True)
 
         verify_as_json(actual)
 

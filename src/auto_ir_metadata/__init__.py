@@ -3,6 +3,7 @@ import platform
 import sys
 import tempfile
 import traceback
+import zipfile
 from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -167,11 +168,20 @@ def persist_ir_metadata(
         f.write(serialized_meta_data)
 
 
-def load_ir_metadata(directory: Path):
+def load_ir_metadata(directory: Path, decompress: bool = False):
     if directory.is_dir() and (directory / '.ir-metadata').is_file():
         return load_ir_metadata(directory / '.ir-metadata')
 
-    ret = json.load(open(directory))
+    if decompress:
+        archive = zipfile.ZipFile(directory, 'r')
+        matches = [i.filename for i in archive.filelist]
+        matches = [i for i in matches if i and i.endswith('.ir-metadata')]
+        if len(matches) == 1:
+            ret = json.loads(archive.read(matches[0]).decode('UTF-8'))
+        else:
+            raise ValueError(f'Could not load metadata from zip archive. Found: {archive.filelist}.')
+    else:
+        ret = json.load(open(directory))
 
     if 'notebook' in ret and 'content' in ret['notebook']:
         try:
