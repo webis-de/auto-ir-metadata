@@ -1,20 +1,22 @@
 import json
-import platform
 import sys
 import tempfile
 import traceback
 import zipfile
 from contextlib import redirect_stdout
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import nbformat
 from nbconvert import HTMLExporter
 from pkg_resources import working_set
-
-from .util import *
+from py_measure import Environment as PyMeasureEnvironment
 
 FILE_NAME = ".ir-metadata"
+
+
+class Environment(PyMeasureEnvironment):
+    pass
 
 
 def __ensure_output_directory_is_valid(outdir: Path):
@@ -79,27 +81,11 @@ def get_python_info() -> Dict[str, Any]:
     return ret
 
 
-def get_gpu_info() -> List[Dict[str, Any]]:
-    try:
-        return [json.loads(gpu.to_json()) for gpu in get_gpus()]
-    except FileNotFoundError:
-        return []
-
-
-def get_platform_info() -> Dict[str, Any]:
-    return {
-        "system": platform.system(),
-        "machine": platform.machine(),
-        "version": platform.version(),
-        "architecture": platform.architecture(),
-        "processor": platform.processor(),
-    }
-
-
 def persist_ir_metadata(
         output_directory: Path,
         system_name: Optional[str] = None,
-        system_description: Optional[str] = None
+        system_description: Optional[str] = None,
+        environment: Optional[str] = None,
         ):
     if output_directory and isinstance(output_directory, str):
         output_directory = Path(output_directory)
@@ -107,10 +93,15 @@ def persist_ir_metadata(
     __ensure_output_directory_is_valid(output_directory)
     output_file = output_directory / FILE_NAME
     collected_meta_data = get_python_info()
-    #collected_meta_data["git"] = collect_git_repo_metadata()
-    #collected_meta_data["cpuinfo"] = get_cpu_info()
-    collected_meta_data["gpus"] = get_gpu_info()
-    collected_meta_data["platform"] = get_platform_info()
+
+    if not environment:
+        environment = Environment(verbose=True)
+        environment.start_measuring()
+        environment.stop_measuring()
+
+    if len(environment.measurements) > 0:
+        for k, v in environment.measurements[-1].items():
+            collected_meta_data[k] = v
 
     if system_name:
         collected_meta_data['system_name'] = system_name
