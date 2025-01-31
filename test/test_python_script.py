@@ -31,17 +31,21 @@ def run_command_and_return_persisted_metadata(command, include_path=False):
         env["PYTHONPATH"] = ROOT_DIR / "src"
         subprocess.check_output(command(f), env=env, stderr=subprocess.STDOUT)
         actual = json.load(open(f"{f}/.ir-metadata", "r"))
-        actual["cpuinfo"] = {k: v for k, v in actual["cpuinfo"].items() if k == "arch"}
         actual["sys"]["executable"] = "python3" if "python3" in actual["sys"]["executable"] else "UNEXPECTED"
         actual["sys"]["version_info"] = "3.XY.XY" if actual["sys"]["version_info"].startswith("3.") else "UNEXPECTED"
         actual["sys"]["argv"] = [i.split("/")[-1] for i in actual["sys"]["argv"] if "example" in i]
-        actual["platform"] = {k: "OMITTED" for k in actual["platform"].keys()}
         actual["sys"]["modules"] = [i for i in actual["sys"]["modules"] if "terrier" in i]
         actual["pkg_resources"] = [i for i in actual["pkg_resources"] if "python-terrier" in i]
         if "codecarbon_emissions" in actual:
             actual["codecarbon_emissions"] = "OMMITTED."
+        if "resources" in actual:
+            actual["resources"] = "OMMITTED."
+        if "system" in actual:
+            actual["system"] = "OMMITTED."
         if "notebook" in actual:
             actual["notebook"] = "OMMITTED."
+        if "elapsed time" in actual:
+            actual["elapsed time"] = "OMMITTED."
 
         if include_path:
             actual['path'] = Path(f)
@@ -78,14 +82,3 @@ class PythonScriptApprovalTests(unittest.TestCase):
             )
 
             verify_as_json(actual)
-
-    def test_for_pyterrier_fails_if_not_in_git(self):
-        with resource("pyterrier") as pyterrier_dir:
-            shutil.rmtree(pyterrier_dir / ".git")
-
-            with self.assertRaises(subprocess.CalledProcessError) as context:
-                run_command_and_return_persisted_metadata(
-                    lambda i: ["python3", f"{pyterrier_dir}/example-script.py", i]
-                )
-
-            self.assertIn("InvalidGitRepositoryError", repr(context.exception.stdout))

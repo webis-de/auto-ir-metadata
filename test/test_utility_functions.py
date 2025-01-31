@@ -1,7 +1,7 @@
 import unittest
 from pathlib import Path
 
-from auto_ir_metadata import _executed_file_from_stacktrace, get_url_of_git_repo
+from auto_ir_metadata.utils import _executed_file_from_stacktrace, get_url_of_git_repo
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 
