@@ -1,0 +1,11 @@
+{
+    "file": "OMMITTED.",
+    "git": "OMMITTED.",
+    "notebook": "OMMITTED.",
+    "pkg_resources": [
+        "python-terrier==0.12.0"
+    ],
+    "sys": "OMMITTED.",
+    "system_description": "my-description",
+    "system_name": "my-system"
+}

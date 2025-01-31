@@ -1,0 +1,18 @@
+{
+    "file": "OMITTED",
+    "git": {
+        "isrepo": "1",
+        "last commit": "ab78806a598420b191a5f7ad9232c435e0c247e5",
+        "remote": {
+            "origin": "git@github.com:webis-de/auto-metadata.git"
+        },
+        "tag": "dev",
+        "untracked files": "1",
+        "up to date": "0"
+    },
+    "notebook": "OMITTED",
+    "pkg_resources": "OMITTED",
+    "sys": "OMITTED",
+    "system_description": "my-description",
+    "system_name": "my-system"
+}

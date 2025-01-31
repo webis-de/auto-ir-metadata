@@ -4,15 +4,14 @@ from pathlib import Path
 import click
 import pandas as pd
 import pyterrier as pt
-from codecarbon import OfflineEmissionsTracker
 
-from autometadata import persist_ir_metadata
+from auto_ir_metadata import Environment, persist_ir_metadata
 
 
 @click.command()
 @click.argument("output-directory", type=Path)
 def main(output_directory):
-    with OfflineEmissionsTracker(country_iso_code="DEU") as tracker:
+    with Environment().measure() as tracker:
         run = pd.DataFrame(
             [
                 {"qid": "q-1", "docno": "doc-01", "rank": 1, "score": 10},
@@ -22,7 +21,7 @@ def main(output_directory):
         )
     output_directory.mkdir(exist_ok=True, parents=True)
     pt.io.write_results(run, output_directory / "run.txt", format="trec")
-    persist_ir_metadata(output_directory, tracker)
+    persist_ir_metadata(output_directory, "my-system-name", "my-description", tracker)
 
 
 if __name__ == "__main__":
