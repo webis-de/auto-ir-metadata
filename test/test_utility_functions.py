@@ -21,11 +21,12 @@ class TestUtilityFunctions(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_git_link_for_ssh(self):
-        expected = 'https://github.com/OpenWebSearch/wows-code/tree/3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f'
-        metadata = {"git": {
-            "commit": "3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f",
-            "active_branch": "main",
-            "remotes": {"origin": "git@github.com:OpenWebSearch/wows-code.git"}
+        expected = "https://github.com/OpenWebSearch/wows-code/tree/3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f"
+        metadata = {
+            "git": {
+                "commit": "3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f",
+                "active_branch": "main",
+                "remotes": {"origin": "git@github.com:OpenWebSearch/wows-code.git"},
             }
         }
 
@@ -34,11 +35,12 @@ class TestUtilityFunctions(unittest.TestCase):
         self.assertEqual(expected, actual)
 
     def test_git_link_for_http(self):
-        expected = 'https://github.com/OpenWebSearch/wows-code/tree/3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f'
-        metadata = {"git": {
-            "commit": "3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f",
-            "active_branch": "main",
-            "remotes": {"origin": "https://github.com/OpenWebSearch/wows-code.git"}
+        expected = "https://github.com/OpenWebSearch/wows-code/tree/3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f"
+        metadata = {
+            "git": {
+                "commit": "3377c12d5c0a9cccf99f8db6fc4cf1c9d3596b8f",
+                "active_branch": "main",
+                "remotes": {"origin": "https://github.com/OpenWebSearch/wows-code.git"},
             }
         }
 

@@ -7,10 +7,7 @@ from auto_ir_metadata import load_ir_metadata as load_ir_metadata_to_test
 
 ROOT_DIR = Path(__file__).parent.parent.resolve()
 TEST_RESOURCES = ROOT_DIR / "test" / "resources"
-FIELDS_TO_OMIT = [
-    'sys', 'pkg_resources', 'platform', 'cpuinfo', 'file', 'notebook', 'gpus',
-    'notebook_html'
-]
+FIELDS_TO_OMIT = ["sys", "pkg_resources", "platform", "cpuinfo", "file", "notebook", "gpus", "notebook_html"]
 
 
 def load_ir_metadata(subdirectory, decompress=False):
@@ -18,7 +15,7 @@ def load_ir_metadata(subdirectory, decompress=False):
 
     for field_to_omit in FIELDS_TO_OMIT:
         if field_to_omit in ret:
-            ret[field_to_omit] = 'OMITTED'
+            ret[field_to_omit] = "OMITTED"
 
     return ret
 

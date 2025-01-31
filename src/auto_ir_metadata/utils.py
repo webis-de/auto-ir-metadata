@@ -44,15 +44,17 @@ def __ensure_output_directory_is_valid(outdir: Path):
         outdir.mkdir(parents=True, exist_ok=True)
 
 
-def _fail_if_parameters_have_wrong_types(system_name: Optional[str], system_description: Optional[str], environment: Optional[str]):
+def _fail_if_parameters_have_wrong_types(
+    system_name: Optional[str], system_description: Optional[str], environment: Optional[str]
+):
     if environment is not None and not isinstance(environment, PyMeasureEnvironment):
-        raise ValueError('Invalid type of environment, I expected an py_measure.Environment.')
+        raise ValueError("Invalid type of environment, I expected an py_measure.Environment.")
 
     if system_name and not isinstance(system_name, str):
-        raise ValueError('Invalid type of system_name, I expected an string.')
+        raise ValueError("Invalid type of system_name, I expected an string.")
 
     if system_description and not isinstance(system_description, str):
-        raise ValueError('Invalid type of system_description, I expected an string.')
+        raise ValueError("Invalid type of system_description, I expected an string.")
 
 
 def _executed_file_from_stacktrace() -> Path:
@@ -65,21 +67,21 @@ def parse_notebook_to_html(notebook_content):
         html_exporter = HTMLExporter(template_name="classic")
         (body, _) = html_exporter.from_notebook_node(notebook)
         return body
-    except:
+    except Exception:
         pass
 
 
 def get_url_of_git_repo(metadata):
     try:
-        url = [i for i in metadata['git']['remotes'].values()][0]
-        url = url.replace('.git', '')
-        commit = metadata['git']['commit']
+        url = [i for i in metadata["git"]["remotes"].values()][0]
+        url = url.replace(".git", "")
+        commit = metadata["git"]["commit"]
 
-        if url.startswith('git@'):
-            url = url.replace(':', '/')
-            url = url.replace('git@', 'https://')
-        return f'{url}/tree/{commit}'
-    except:
+        if url.startswith("git@"):
+            url = url.replace(":", "/")
+            url = url.replace("git@", "https://")
+        return f"{url}/tree/{commit}"
+    except Exception:
         return None
 
 

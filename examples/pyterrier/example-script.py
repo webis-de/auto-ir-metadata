@@ -21,7 +21,7 @@ def main(output_directory):
         )
     output_directory.mkdir(exist_ok=True, parents=True)
     pt.io.write_results(run, output_directory / "run.txt", format="trec")
-    persist_ir_metadata(output_directory, 'my-system-name', 'my-description', tracker)
+    persist_ir_metadata(output_directory, "my-system-name", "my-description", tracker)
 
 
 if __name__ == "__main__":

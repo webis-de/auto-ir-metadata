@@ -1,6 +1,5 @@
 import json
 import os
-import shutil
 import subprocess
 import tempfile
 import unittest
@@ -48,7 +47,7 @@ def run_command_and_return_persisted_metadata(command, include_path=False):
             actual["elapsed time"] = "OMMITTED."
 
         if include_path:
-            actual['path'] = Path(f)
+            actual["path"] = Path(f)
 
         return actual
 
