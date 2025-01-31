@@ -1,30 +1,27 @@
 {
-    "codecarbon_emissions": "OMMITTED.",
-    "cpuinfo": {
-        "arch": "X86_64"
-    },
+    "elapsed time": "OMMITTED.",
+    "energy": {},
     "file": {
-        "content": "#!/usr/bin/env python3\nfrom pathlib import Path\n\nimport click\nimport pandas as pd\nimport pyterrier as pt\nfrom codecarbon import OfflineEmissionsTracker\n\nfrom auto_ir_metadata import persist_ir_metadata\n\n\n@click.command()\n@click.argument(\"output-directory\", type=Path)\ndef main(output_directory):\n    with OfflineEmissionsTracker(country_iso_code=\"DEU\") as tracker:\n        run = pd.DataFrame(\n            [\n                {\"qid\": \"q-1\", \"docno\": \"doc-01\", \"rank\": 1, \"score\": 10},\n                {\"qid\": \"q-1\", \"docno\": \"doc-02\", \"rank\": 2, \"score\": 9},\n                {\"qid\": \"q-1\", \"docno\": \"doc-03\", \"rank\": 3, \"score\": 8},\n            ]\n        )\n    output_directory.mkdir(exist_ok=True, parents=True)\n    pt.io.write_results(run, output_directory / \"run.txt\", format=\"trec\")\n    persist_ir_metadata(output_directory, tracker)\n\n\nif __name__ == \"__main__\":\n    main()\n",
+        "content": "#!/usr/bin/env python3\nfrom pathlib import Path\n\nimport click\nimport pandas as pd\nimport pyterrier as pt\n\nfrom auto_ir_metadata import Environment, persist_ir_metadata\n\n\n@click.command()\n@click.argument(\"output-directory\", type=Path)\ndef main(output_directory):\n    with Environment().measure() as tracker:\n        run = pd.DataFrame(\n            [\n                {\"qid\": \"q-1\", \"docno\": \"doc-01\", \"rank\": 1, \"score\": 10},\n                {\"qid\": \"q-1\", \"docno\": \"doc-02\", \"rank\": 2, \"score\": 9},\n                {\"qid\": \"q-1\", \"docno\": \"doc-03\", \"rank\": 3, \"score\": 8},\n            ]\n        )\n    output_directory.mkdir(exist_ok=True, parents=True)\n    pt.io.write_results(run, output_directory / \"run.txt\", format=\"trec\")\n    persist_ir_metadata(output_directory, 'my-system-name', 'my-description', tracker)\n\n\nif __name__ == \"__main__\":\n    main()\n",
         "name": "example-script.py"
     },
     "git": {
-        "active_branch": "main",
-        "commit": "04be3314276bfb219004518b3581ec0bb5e396d3",
-        "remotes": {
-            "origin": "url-does-not-exist"
-        }
+        "isrepo": "1",
+        "last commit": "ab78806a598420b191a5f7ad9232c435e0c247e5",
+        "remote": {
+            "origin": "git@github.com:webis-de/auto-metadata.git"
+        },
+        "tag": "dev",
+        "untracked files": "1",
+        "up to date": "0"
     },
-    "gpus": [],
+    "gpu": {
+        "supported": "0"
+    },
     "pkg_resources": [
         "python-terrier==0.12.0"
     ],
-    "platform": {
-        "architecture": "OMITTED",
-        "machine": "OMITTED",
-        "processor": "OMITTED",
-        "system": "OMITTED",
-        "version": "OMITTED"
-    },
+    "resources": "OMMITTED.",
     "sys": {
         "argv": [
             "example-script.py"
@@ -34,5 +31,8 @@
             "pyterrier"
         ],
         "version_info": "3.XY.XY"
-    }
+    },
+    "system": "OMMITTED.",
+    "system_description": "my-description",
+    "system_name": "my-system-name"
 }
