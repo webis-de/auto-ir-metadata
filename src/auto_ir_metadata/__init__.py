@@ -94,8 +94,17 @@ def persist_ir_metadata(
     output_file = output_directory / FILE_NAME
     collected_meta_data = get_python_info()
 
+    if environment is not None and not isinstance(environment, PyMeasureEnvironment):
+        raise ValueError('Invalid type of environment, I expected an py_measure.Environment.')
+
+    if system_name and not isinstance(system_name, str):
+        raise ValueError('Invalid type of system_name, I expected an string.')
+
+    if system_description and not isinstance(system_description, str):
+        raise ValueError('Invalid type of system_description, I expected an string.')
+
     if not environment:
-        environment = Environment(verbose=True)
+        environment = Environment(['git'])
         environment.start_measuring()
         environment.stop_measuring()
 
