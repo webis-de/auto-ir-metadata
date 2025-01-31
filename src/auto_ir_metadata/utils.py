@@ -102,11 +102,12 @@ def _notebook_contents() -> tuple[Path, Path]:
 
     ipython = get_ipython()  # type: ignore
 
-    with tempfile.TemporaryDirectory() as f:
-        python_file = Path(f) / "script.py"
-        notebook_file = Path(f) / "notebook.ipynb"
-        with redirect_stdout(None):
-            ipython.magic(f"save -f {python_file} 1-9999")
-            ipython.magic(f"notebook {notebook_file}")
+    f = Path(tempfile.TemporaryDirectory().name + '-1234')
+    f.mkdir(parents=True, exist_ok=True)
+    python_file = Path(f) / "script.py"
+    notebook_file = Path(f) / "notebook.ipynb"
+    with redirect_stdout(None):
+        ipython.magic(f"save -f {python_file} 1-9999")
+        ipython.magic(f"notebook {notebook_file}")
 
-        return python_file, notebook_file
+    return python_file, notebook_file
