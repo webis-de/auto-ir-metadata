@@ -35,18 +35,20 @@ def run_command_and_return_persisted_metadata(command, include_path=False):
         actual["sys"]["argv"] = [i.split("/")[-1] for i in actual["sys"]["argv"] if "example" in i]
         actual["sys"]["modules"] = [i for i in actual["sys"]["modules"] if "terrier" in i]
         actual["pkg_resources"] = [i for i in actual["pkg_resources"] if "python-terrier" in i]
-        if "git" in actual:
-            actual["git"] = "OMMITTED."
-        if "codecarbon_emissions" in actual:
-            actual["codecarbon_emissions"] = "OMMITTED."
-        if "resources" in actual:
-            actual["resources"] = "OMMITTED."
-        if "system" in actual:
-            actual["system"] = "OMMITTED."
-        if "notebook" in actual:
-            actual["notebook"] = "OMMITTED."
-        if "elapsed time" in actual:
-            actual["elapsed time"] = "OMMITTED."
+
+        for field_to_omit in [
+            "sys",
+            "git",
+            "git",
+            "codecarbon_emissions",
+            "resources",
+            "system",
+            "notebook",
+            "file",
+            "elapsed time",
+        ]:
+            if field_to_omit in actual:
+                actual[field_to_omit] = "OMMITTED."
 
         if include_path:
             actual["path"] = Path(f)

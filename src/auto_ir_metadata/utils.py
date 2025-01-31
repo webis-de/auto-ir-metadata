@@ -102,7 +102,7 @@ def _notebook_contents() -> tuple[Path, Path]:
 
     ipython = get_ipython()  # type: ignore
 
-    f = Path(tempfile.TemporaryDirectory().name + '-1234')
+    f = Path(tempfile.TemporaryDirectory().name + "-1234")
     f.mkdir(parents=True, exist_ok=True)
     python_file = Path(f) / "script.py"
     notebook_file = Path(f) / "notebook.ipynb"

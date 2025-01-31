@@ -1,10 +1,7 @@
 {
     "elapsed time": "OMMITTED.",
     "energy": {},
-    "file": {
-        "content": "#!/usr/bin/env python3\nfrom pathlib import Path\n\nimport click\nimport pandas as pd\nimport pyterrier as pt\n\nfrom auto_ir_metadata import Environment, persist_ir_metadata\n\n\n@click.command()\n@click.argument(\"output-directory\", type=Path)\ndef main(output_directory):\n    with Environment().measure() as tracker:\n        run = pd.DataFrame(\n            [\n                {\"qid\": \"q-1\", \"docno\": \"doc-01\", \"rank\": 1, \"score\": 10},\n                {\"qid\": \"q-1\", \"docno\": \"doc-02\", \"rank\": 2, \"score\": 9},\n                {\"qid\": \"q-1\", \"docno\": \"doc-03\", \"rank\": 3, \"score\": 8},\n            ]\n        )\n    output_directory.mkdir(exist_ok=True, parents=True)\n    pt.io.write_results(run, output_directory / \"run.txt\", format=\"trec\")\n    persist_ir_metadata(output_directory, 'my-system-name', 'my-description', tracker)\n\n\nif __name__ == \"__main__\":\n    main()\n",
-        "name": "example-script.py"
-    },
+    "file": "OMMITTED.",
     "git": "OMMITTED.",
     "gpu": {
         "supported": "0"
@@ -13,16 +10,7 @@
         "python-terrier==0.12.0"
     ],
     "resources": "OMMITTED.",
-    "sys": {
-        "argv": [
-            "example-script.py"
-        ],
-        "executable": "python3",
-        "modules": [
-            "pyterrier"
-        ],
-        "version_info": "3.XY.XY"
-    },
+    "sys": "OMMITTED.",
     "system": "OMMITTED.",
     "system_description": "my-description",
     "system_name": "my-system-name"
