@@ -20,6 +20,11 @@
 
 ---
 
+Install via:
+```
+pip3 install auto-ir-metadata
+```
+
 `Stay tuned, more information will follow`
 
 Features:
