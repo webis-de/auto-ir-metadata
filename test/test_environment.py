@@ -14,7 +14,7 @@ class Tests(unittest.TestCase):
         actual = environment.stop_measuring()
 
         self.assertIsNotNone(actual)
-        self.assertTrue("git" in actual)
+        self.assertIn("git", actual)
 
     def test_py_measure_works_in_with_statement(self):
         environment = Environment()
@@ -26,7 +26,7 @@ class Tests(unittest.TestCase):
         actual = environment.measurements[0]
 
         self.assertIsNotNone(actual)
-        self.assertTrue("git" in actual)
+        self.assertIn("git", actual)
 
     def test_py_measure_works_as_function_decorator(self):
         environment = Environment()
@@ -40,4 +40,4 @@ class Tests(unittest.TestCase):
         actual = environment.measurements[0]
 
         self.assertIsNotNone(actual)
-        self.assertTrue("git" in actual)
+        self.assertIn("git", actual)

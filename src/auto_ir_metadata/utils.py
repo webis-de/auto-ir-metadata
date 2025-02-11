@@ -8,7 +8,7 @@ from typing import Any, Dict, Optional
 import nbformat
 from nbconvert import HTMLExporter
 from pkg_resources import working_set
-from py_measure import Environment as PyMeasureEnvironment
+from tira_measure import Environment as TiraMeasureEnvironment
 
 FILE_NAME = ".ir-metadata"
 
@@ -47,7 +47,7 @@ def __ensure_output_directory_is_valid(outdir: Path):
 def _fail_if_parameters_have_wrong_types(
     system_name: Optional[str], system_description: Optional[str], environment: Optional[str]
 ):
-    if environment is not None and not isinstance(environment, PyMeasureEnvironment):
+    if environment is not None and not isinstance(environment, TiraMeasureEnvironment):
         raise ValueError("Invalid type of environment, I expected an py_measure.Environment.")
 
     if system_name and not isinstance(system_name, str):

@@ -9,7 +9,7 @@ from auto_ir_metadata import Environment, persist_ir_metadata
 
 
 @click.command()
-@click.argument("output-directory", type=Path)
+@click.argument("output_directory", type=Path)
 def main(output_directory):
     with Environment().measure() as tracker:
         run = pd.DataFrame(

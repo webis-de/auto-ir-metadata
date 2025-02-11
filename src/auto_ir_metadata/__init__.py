@@ -3,12 +3,12 @@ import zipfile
 from pathlib import Path
 from typing import Optional
 
-from py_measure import Environment as PyMeasureEnvironment
+from tira_measure import Environment as TiraMeasureEnvironment
 
 import auto_ir_metadata.utils as utils
 
 
-class Environment(PyMeasureEnvironment):
+class Environment(TiraMeasureEnvironment):
     pass
 
 
@@ -16,7 +16,7 @@ def persist_ir_metadata(
     output_directory: Path,
     system_name: Optional[str] = None,
     system_description: Optional[str] = None,
-    environment: Optional[PyMeasureEnvironment] = None,
+    environment: Optional[TiraMeasureEnvironment] = None,
 ):
     if output_directory and isinstance(output_directory, str):
         output_directory = Path(output_directory)
@@ -32,8 +32,7 @@ def persist_ir_metadata(
         environment.stop_measuring()
 
     if len(environment.measurements) > 0:
-        for k, v in environment.measurements[-1].items():
-            collected_meta_data[k] = v
+        collected_meta_data.update(environment.measurements[-1])
 
     if system_name:
         collected_meta_data["system_name"] = system_name
@@ -51,8 +50,7 @@ def persist_ir_metadata(
 
     serialized_meta_data = json.dumps(collected_meta_data)
 
-    with open(output_file, "w") as f:
-        f.write(serialized_meta_data)
+    output_file.write_text(serialized_meta_data)
 
 
 def load_ir_metadata(directory: Path, decompress: bool = False):
@@ -68,7 +66,8 @@ def load_ir_metadata(directory: Path, decompress: bool = False):
         else:
             raise ValueError(f"Could not load metadata from zip archive. Found: {archive.filelist}.")
     else:
-        ret = json.load(open(directory))
+        with open(directory) as stream:
+            ret = json.load(stream)
 
     if "notebook" in ret and "content" in ret["notebook"]:
         ret["notebook_html"] = utils.parse_notebook_to_html(json.dumps(json.loads(ret["notebook"]["content"])))
